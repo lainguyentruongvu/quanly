@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -63,5 +65,14 @@ public class NhanVienService {
 
     public NhanVien getNhanVienByEmail(String email) {
         return nhanVienDao.findByEmail(email).orElse(null);
+    }
+
+     // **Lấy thông tin nhân viên đang đăng nhập**
+    public NhanVien getNhanVienDangNhap() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            return getNhanVienByEmail(authentication.getName());
+        }
+        return null;
     }
 }

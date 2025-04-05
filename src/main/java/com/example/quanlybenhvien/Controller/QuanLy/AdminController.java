@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.quanlybenhvien.Service.QuanLyService;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class AdminController {
     @Autowired
@@ -24,6 +26,11 @@ public class AdminController {
         if (logout != null) {
             model.addAttribute("message", "Đã đăng xuất thành công!");
         }
+        return "admin/admin-login";
+    }
+     @GetMapping("/logoutadmin")
+    public String logout(HttpSession session) {
+        session.invalidate();
         return "admin/admin-login";
     }
 

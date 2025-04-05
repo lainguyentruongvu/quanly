@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Xác nhận lịch khám - Bác sĩ</title>
+  <!-- Sử dụng Bootstrap CSS từ CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container my-4">
+    <h2 class="text-center mb-4">Danh sách lịch khám chờ xác nhận của bác sĩ</h2>
+    
+    <!-- Hiển thị thông báo nếu có -->
+    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+    
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover align-middle">
+        <thead class="table-light">
+          <tr class="text-center">
+            <th>Mã lịch khám</th>
+            <th>Bệnh nhân</th>
+            <th>Chuyên khoa</th>
+            <th>Nhân viên</th>
+            <th>Ngày khám</th>
+            <th>Giờ khám</th>
+            <th>Trạng thái</th>
+            <th>Ghi chú</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="lich : ${lichKhams}">
+            <td th:text="${lich.maLichKham}" class="text-center">1</td>
+            <td th:text="${lich.benhNhan.hoTen}">Nguyễn Văn A</td>
+            <td th:text="${lich.chuyenKhoa.tenChuyenKhoa}">Nội khoa</td>
+            <td th:text="${lich.nhanVien != null ? lich.nhanVien.hoTen : 'Chưa xác nhận'}" class="text-center">Nhân viên</td>
+            <td th:text="${#temporals.format(lich.ngayKham, 'dd/MM/yyyy')}" class="text-center">01/01/2025</td>
+            <td th:text="${lich.gioKham}" class="text-center">08:30</td>
+            <td th:text="${lich.trangThai}" class="text-center">Chờ bác sĩ xác nhận</td>
+            <td th:text="${lich.ghiChu}">Chưa có ghi chú</td>
+            <td class="text-center">
+              <!-- Form xác nhận lịch khám -->
+              <form th:action="@{/bacsi/trangchu/lichkham/xac-nhan}" method="post" class="d-inline">
+                <input type="hidden" name="maLichKham" th:value="${lich.maLichKham}" />
+                <!-- Khi bác sĩ xác nhận, trạng thái sẽ được cập nhật (ví dụ "Đã xác nhận bởi bác sĩ") -->
+                <input type="hidden" name="trangThai" value="Đã xác nhận bởi bác sĩ" />
+                <div class="mb-1">
+                  <input type="text" name="ghiChu" placeholder="Nhập ghi chú" class="form-control form-control-sm" required/>
+                </div>
+                <button type="submit" class="btn btn-success btn-sm">Xác nhận</button>
+              </form>
+              <!-- Form hủy lịch khám -->
+              <form th:action="@{/bacsi/trangchu/lichkham/xac-nhan}" method="post" class="d-inline ms-2">
+                <input type="hidden" name="maLichKham" th:value="${lich.maLichKham}" />
+                <input type="hidden" name="trangThai" value="Hủy bởi bác sĩ" />
+                <input type="hidden" name="ghiChu" value="Hủy lịch" />
+                <button type="submit" class="btn btn-danger btn-sm">Hủy</button>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <!-- Bootstrap JS Bundle (với Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

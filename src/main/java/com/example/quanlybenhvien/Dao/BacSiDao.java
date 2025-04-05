@@ -25,5 +25,6 @@ public interface BacSiDao extends JpaRepository<BacSi, String> {
     Optional<BacSi> findByEmail(String email);
 
     List<BacSi> findByChuyenKhoa_MaChuyenKhoa(String maChuyenKhoa);
+    
 
 }

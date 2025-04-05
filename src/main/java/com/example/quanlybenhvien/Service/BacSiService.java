@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -89,6 +91,13 @@ public class BacSiService {
 
     public List<BacSi> getBacSiByChuyenKhoa(String maChuyenKhoa) {
         return bacsiDao.findByChuyenKhoa_MaChuyenKhoa(maChuyenKhoa);
+    }
+     public BacSi getBacSiDangNhap() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            return getBacSiByEmail(authentication.getName());
+        }
+        return null;
     }
 
 }

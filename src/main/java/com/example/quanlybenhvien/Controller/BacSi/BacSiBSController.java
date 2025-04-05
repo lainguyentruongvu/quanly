@@ -33,4 +33,8 @@ public class BacSiBSController {
     public String showAdminHome() {
         return "bacsi/bacsi";
     }
+    @GetMapping("/lichkham-xacnhan")
+    public String lichKhamXacNhan() {
+        return "bacsi/lichkham-xacnhan"; // Tên file HTML trong thư mục templates
+    }
 }

@@ -5,8 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.quanlybenhvien.Entity.NhanVien;
 import com.example.quanlybenhvien.Service.NhanVienService;
 
 @Controller
@@ -15,21 +15,27 @@ public class NhanVienNVController {
     @Autowired
     NhanVienService nhanVienService;
 
+    // Hiển thị trang đăng nhập
     @GetMapping("/login")
-    public String showLoginPage(@RequestParam(value = "error", required = false) String error,
-            @RequestParam(value = "logout", required = false) String logout,
-            Model model) {
-        if (error != null) {
-            model.addAttribute("error", "Sai tài khoản hoặc mật khẩu!");
-        }
-        if (logout != null) {
-            model.addAttribute("message", "Đã đăng xuất thành công!");
-        }
+    public String showLoginPage(Model model) {
         return "nhanvien/nhanvien-login";
     }
 
+    // Hiển thị trang chủ nhân viên
     @GetMapping("/trangchu")
     public String showAdminHome() {
         return "nhanvien/nhanvien";
+    }
+
+    // **Hiển thị trang thông tin cá nhân**
+    @GetMapping("/profile")
+    public String showProfile(Model model) {
+        NhanVien nhanVien = nhanVienService.getNhanVienDangNhap();
+        if (nhanVien != null) {
+            model.addAttribute("nhanVien", nhanVien);
+        } else {
+            model.addAttribute("error", "Không thể lấy thông tin nhân viên.");
+        }
+        return "nhanvien/profile";
     }
 }
