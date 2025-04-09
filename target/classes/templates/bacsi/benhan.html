@@ -26,24 +26,63 @@
     <div class="container mt-4">
         <h1 class="text-center mb-4">Quản lý Bệnh Án</h1>
 
+        <!-- Form Tìm Kiếm Bệnh Án -->
+        <form th:action="@{/bacsi/benhan}" method="get" class="mb-3">
+            <div class="input-group">
+                <input type="number" class="form-control" name="maBenhNhan" placeholder="Nhập mã bệnh nhân" required>
+                <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+            </div>
+        </form>
+
         <!-- Form Thêm/Sửa Bệnh Án -->
-        <div class="content mb-4">
-            <h2 th:if="${benhAn != null}" class="mb-3">Sửa Bệnh Án</h2>
-            <h2 th:if="${benhAn == null}" class="mb-3">Thêm Bệnh Án</h2>
-            <form th:action="@{/bacsi/benhan/save}" th:object="${benhAn}" method="post">
-                <input type="hidden" th:field="*{maBenhAn}">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="tenBenhAn" class="form-label">Tên Bệnh Án</label>
-                        <input type="text" class="form-control" id="tenBenhAn" th:value="${tenBenhAn}" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="ngayKham" class="form-label">Ngày Khám</label>
-                        <input type="date" class="form-control" id="ngayKham" th:field="*{ngayKham}" required>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary">Lưu</button>
-            </form>
+        <!-- Form Thêm/Sửa Bệnh Án -->
+<div class="content mb-4">
+    <h2 th:if="${benhAn.maBenhAn != null}" class="mb-3">Sửa Bệnh Án</h2>
+    <h2 th:unless="${benhAn.maBenhAn != null}" class="mb-3">Thêm Bệnh Án</h2>
+    <form th:action="@{/bacsi/benhan/save}" th:object="${benhAn}" method="post">
+        <!-- Mã Bệnh Án (ẩn) -->
+        <input type="hidden" th:field="*{maBenhAn}">
+
+        <!-- Tên Bệnh Án -->
+        <div class="mb-3">
+            <label for="tenBenhAn" class="form-label">Tên Bệnh Án</label>
+            <input type="text" class="form-control" id="tenBenhAn" th:field="*{tenBenhAn}" placeholder="Nhập tên bệnh án" required>
+        </div>
+
+        <!-- Ngày Khám -->
+        <div class="mb-3">
+            <label for="ngayKham" class="form-label">Ngày Khám</label>
+            <input type="date" class="form-control" id="ngayKham" th:field="*{ngayKham}" required>
+        </div>
+
+        <!-- Triệu Chứng -->
+        <div class="mb-3">
+            <label for="trieuChung" class="form-label">Triệu Chứng</label>
+            <textarea class="form-control" id="trieuChung" th:field="*{trieuChung}" placeholder="Nhập triệu chứng" required></textarea>
+        </div>
+
+        <!-- Điều Trị -->
+        <div class="mb-3">
+            <label for="dieuTri" class="form-label">Điều Trị</label>
+            <textarea class="form-control" id="dieuTri" th:field="*{dieuTri}" placeholder="Nhập phương pháp điều trị" required></textarea>
+        </div>
+
+        <!-- Ghi Chú -->
+        <div class="mb-3">
+            <label for="ghiChu" class="form-label">Ghi Chú</label>
+            <textarea class="form-control" id="ghiChu" th:field="*{ghiChu}" placeholder="Nhập ghi chú"></textarea>
+        </div>
+
+        <!-- Mã Bệnh Nhân -->
+        <div class="mb-3">
+            <label for="benhNhan" class="form-label">Mã Bệnh Nhân</label>
+            <input type="number" class="form-control" id="benhNhan" th:field="*{benhNhan.maBenhNhan}" placeholder="Nhập mã bệnh nhân" required>
+        </div>
+
+        <!-- Nút Lưu -->
+        <button type="submit" class="btn btn-primary">Lưu</button>
+    </form>
+</div>
         </div>
 
         <!-- Danh sách Bệnh Án -->
@@ -53,6 +92,9 @@
                     <th>ID</th>
                     <th>Tên Bệnh Án</th>
                     <th>Ngày Khám</th>
+                    <th>Triệu chứng</th>
+                    <th>Điều trị</th>
+                    <th>Ghi chú</th>
                     <th>Hành động</th>
                 </tr>
             </thead>
@@ -61,9 +103,11 @@
                     <td th:text="${benhAn.maBenhAn}"></td>
                     <td th:text="${benhAn.tenBenhAn}"></td>
                     <td th:text="${benhAn.ngayKham}"></td>
+                    <td th:text="${benhAn.trieuChung}"></td>
+                    <td th:text="${benhAn.dieuTri}"></td>
+                    <td th:text="${benhAn.ghiChu}"></td>
                     <td>
-                       
-                        <a th:href="@{/bacsi/benhan/sua/{id}(id=${benhAn.maBenhAn})}" class="btn btn-warning btn-sm">Sửa</a>
+                        <a th:href="@{/bacsi/benhan(id=${benhAn.maBenhAn})}" class="btn btn-warning btn-sm">Sửa</a>
                         <a th:href="@{/bacsi/benhan/delete/{id}(id=${benhAn.maBenhAn})}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</a>
                     </td>
                 </tr>

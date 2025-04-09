@@ -28,5 +28,7 @@ public class BenhAnService {
     public boolean existsById(Integer id) {
         return benhAnDao.existsById(id);
     }
-    
+    public List<BenhAn> getBenhAnByMaBenhNhan(Integer maBenhNhan) {
+        return benhAnDao.findByBenhNhan_MaBenhNhan(maBenhNhan);
+    }
 }

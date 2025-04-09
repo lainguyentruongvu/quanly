@@ -47,4 +47,7 @@ public class BenhAn {
 
     @Column(name = "ghi_chu")
     private String ghiChu;
+
+
+
 }
