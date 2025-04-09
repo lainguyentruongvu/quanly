@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+
 @Service
 public class BenhAnService {
     @Autowired
@@ -15,11 +16,15 @@ public class BenhAnService {
     public List<BenhAn> getAllBenhAn() {
         return benhAnDao.findAll();
     }
+
+    public void saveBenhAn(BenhAn benhAn) {
+
+        benhAnDao.save(benhAn);
+    }
+   
+
     public Optional<BenhAn> getBenhAnById(Integer id) {
         return benhAnDao.findById(id);
-    }
-    public void saveBenhAn(BenhAn benhAn) {
-        benhAnDao.save(benhAn);
     }
     public void deleteBenhAn(Integer id) {
         benhAnDao.deleteById(id);
