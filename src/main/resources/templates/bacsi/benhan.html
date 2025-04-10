@@ -52,13 +52,21 @@
         <!-- Mã Bệnh Nhân -->
         <div class="mb-3">
             <label for="benhNhan" class="form-label">Mã Bệnh Nhân</label>
-            <input type="number" class="form-control" id="benhNhan" name="benhNhan.maBenhNhan" th:value="${benhAn.benhNhan != null ? benhAn.benhNhan.maBenhNhan : ''}" placeholder="Nhập mã bệnh nhân" required>
+            <select name="benhNhan.maBenhNhan" th:field="*{benhNhan.maBenhNhan}" class="form-control" required >
+                <option value="" disabled selected>Chọn bệnh nhân</option>
+                <option th:each="bn : ${dsBenhNhan}" th:value="${bn.maBenhNhan}" th:text="${bn.maBenhNhan + ' : ' + bn.hoTen}" />
+            </select>
+            <!-- <input type="number" class="form-control" id="benhNhan" name="benhNhan.maBenhNhan" th:value="${benhAn.benhNhan != null ? benhAn.benhNhan.maBenhNhan : ''}" placeholder="Nhập mã bệnh nhân" required> -->
         </div>
 
         <!-- Mã Bác Sĩ -->
         <div class="mb-3">
             <label for="benhNhan" class="form-label">Mã Bác Sĩ</label>
-            <input type="text" class="form-control" id="bacSi" name="bacSi.maBacSi"  th:value="${benhAn.bacSi != null ? benhAn.bacSi.maBacSi : ''}" placeholder="Nhập mã bác sĩ" required>
+            <select name="bacSi.maBacSi" th:field="*{bacSi.maBacSi}" class="form-control" required >
+                <option value="" disabled selected>Chọn bác sĩ</option>
+                <option th:each="bs : ${dsBacSi}" th:value="${bs.maBacSi}" th:text="${bs.maBacSi + ' : ' + bs.hoTen}" />
+            </select>
+            <!-- <input type="text" class="form-control" id="bacSi" name="bacSi.maBacSi"  th:value="${benhAn.bacSi != null ? benhAn.bacSi.maBacSi : ''}" placeholder="Nhập mã bác sĩ" required> -->
         </div>
         <!-- Ngày Khám -->
         <div class="mb-3">

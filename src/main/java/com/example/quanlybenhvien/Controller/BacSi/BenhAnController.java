@@ -1,11 +1,13 @@
 package com.example.quanlybenhvien.Controller.BacSi;
 
+import com.example.quanlybenhvien.Dao.BacSiDao;
 import com.example.quanlybenhvien.Dao.BenhAnDao;
 import com.example.quanlybenhvien.Entity.BacSi;
 import com.example.quanlybenhvien.Entity.BenhAn;
 import com.example.quanlybenhvien.Entity.BenhNhan;
 import com.example.quanlybenhvien.Service.BacSiService;
 import com.example.quanlybenhvien.Service.BenhAnService;
+import com.example.quanlybenhvien.Service.BenhNhanService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -27,7 +29,16 @@ public class BenhAnController {
     @Autowired
     private BenhAnService benhAnService;
 
+    @Autowired
+    private BacSiService bacSiService;
 
+    @Autowired
+    private BacSiDao bacSiDao;
+
+    @Autowired
+    private BenhNhanService benhNhanService;
+
+    
 
   
 
@@ -43,23 +54,34 @@ public class BenhAnController {
         }
         model.addAttribute("benhAns", benhAns);
         model.addAttribute("benhAn", new BenhAn());
-
+        List<BacSi> dsBacSi = bacSiService.getAllBacSi();
+        model.addAttribute("dsBacSi", dsBacSi); 
+        List<BenhNhan> dsBenhNhan = benhNhanService.getAllBenhNhans();
+        model.addAttribute("dsBenhNhan", dsBenhNhan);
         return "bacsi/benhan"; // Hiển thị danh sách bệnh án trong giao diện
     }
 
     // findById
     @GetMapping("/edit/{id}")
-    public String getBenhAnById(@PathVariable("id") Integer id, Model model) {
-        Optional<BenhAn> benhAnOptional = benhAnService.getBenhAnById(id);
-        if (benhAnOptional.isPresent()) {
-            model.addAttribute("benhAn", benhAnOptional.get());
-
-        } else {
-            // Xử lý khi không tìm thấy bệnh án
-            model.addAttribute("error", "Không tìm thấy bệnh án với ID: " + id);
-        }
+public String getBenhAnById(@PathVariable("id") Integer id, Model model) {
+    // Lấy bệnh án theo ID
+    Optional<BenhAn> benhAnOptional = benhAnService.getBenhAnById(id);
+    if (benhAnOptional.isPresent()) {
+        model.addAttribute("benhAn", benhAnOptional.get());
+    } else {
+        model.addAttribute("error", "Không tìm thấy bệnh án với ID: " + id);
+        // Truyền danh sách bác sĩ và bệnh nhân để hiển thị dropdown
+        model.addAttribute("dsBacSi", bacSiService.getAllBacSi());
+        model.addAttribute("dsBenhNhan", benhNhanService.getAllBenhNhans());
         return "bacsi/benhan"; // Trả về trang danh sách bệnh án
     }
+
+    // Truyền danh sách bác sĩ và bệnh nhân để hiển thị dropdown
+    model.addAttribute("dsBacSi", bacSiService.getAllBacSi());
+    model.addAttribute("dsBenhNhan", benhNhanService.getAllBenhNhans());
+
+    return "bacsi/benhan"; // Trả về trang sửa bệnh án
+}
     
 
 
