@@ -42,7 +42,7 @@ ALTER COLUMN so_luong INT NULL;
 
 
 select * from BACSI
--- Tạo bảng nhân viên
+
 CREATE TABLE BACSI (
     ma_bac_si VARCHAR(20) NOT NULL PRIMARY KEY,
     ho_ten NVARCHAR(255) NOT NULL,
@@ -80,26 +80,12 @@ CREATE TABLE BENHNHAN (
     nam_sinh DATE ,
     gioi_tinh VARCHAR(10) ,
     sdt VARCHAR(15) UNIQUE,
-    email VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL ,
     mat_khau NVARCHAR(255) ,
     hinh NVARCHAR(255) ,
     tinh_tp NVARCHAR(100) ,
     quan_huyen NVARCHAR(100),
     duong NVARCHAR(255)
-);
-
--- Tạo bảng bệnh án
-CREATE TABLE BENHAN (
-    ma_benh_an int identity(1,1) PRIMARY KEY,
-    ten_benh_an NVARCHAR(255) NOT NULL,
-    ma_benh_nhan int NOT NULL,
-    ma_bac_si VARCHAR(20) NOT NULL,
-    ngay_kham DATE NOT NULL,
-    trieu_chung NVARCHAR(255) NOT NULL,
-    dieu_tri NVARCHAR(255) NOT NULL,
-    ghi_chu NVARCHAR(255) NOT NULL,
-    FOREIGN KEY (ma_benh_nhan) REFERENCES BENHNHAN(ma_benh_nhan),
-    FOREIGN KEY (ma_bac_si) REFERENCES BACSI(ma_bac_si)
 );
 
 -- Tạo bảng dịch vụ
@@ -110,12 +96,11 @@ CREATE TABLE DICHVU (
     gia DECIMAL(10,2) NOT NULL
 );
 
-ALTER TABLE LICHKHAM ALTER COLUMN ma_nhan_vien VARCHAR(20) NULL;
 -- Tạo bảng lịch khám
 CREATE TABLE LICHKHAM (
     ma_lich_kham int identity(1,1) PRIMARY KEY,
     ma_benh_nhan int NOT NULL,
-    ma_nhan_vien VARCHAR(20) NOT NULL,
+    ma_nhan_vien VARCHAR(20) NULL,
     ma_chuyen_khoa VARCHAR(20) NOT NULL,
 	ma_bac_si varchar(20) NULL,
     ngay_kham DATE NOT NULL,
@@ -127,8 +112,22 @@ CREATE TABLE LICHKHAM (
     FOREIGN KEY (ma_chuyen_khoa) REFERENCES CHUYENKHOA(ma_chuyen_khoa),
 	FOREIGN KEY (ma_bac_si) REFERENCES BACSI(ma_bac_si),
 );
-select * from LICHKHAM
 
+select * from LICHKHAM
+-- Tạo bảng bệnh án
+CREATE TABLE BENHAN (
+    ma_benh_an int identity(1,1) PRIMARY KEY,
+    ten_benh_an NVARCHAR(255) NOT NULL,
+    ma_lich_kham int NOT NULL,
+    ma_bac_si VARCHAR(20) NOT NULL,
+    ngay_kham DATE NOT NULL,
+    trieu_chung NVARCHAR(255) NOT NULL,
+    dieu_tri NVARCHAR(255) NOT NULL,
+    ghi_chu NVARCHAR(255) NOT NULL,
+    FOREIGN KEY (ma_lich_kham) REFERENCES LICHKHAM(ma_lich_kham),
+    FOREIGN KEY (ma_bac_si) REFERENCES BACSI(ma_bac_si)
+);
+SELECT * FROM BENHAN 
 -- Tạo bảng chi tiết dịch vụ
 CREATE TABLE CHITIETDICHVU (
     ma_chi_tiet_dich_vu int identity(1,1) PRIMARY KEY,
@@ -194,7 +193,7 @@ CREATE TABLE CHITIETDONTHUOC (
     ma_chi_tiet_dt INT IDENTITY(1,1) PRIMARY KEY,
     ma_don_thuoc INT NOT NULL,
     ma_thuoc VARCHAR(20) NOT NULL,
-    soluong INT NOT NULL CHECK (soluong > 0),
+    so_luong INT NOT NULL CHECK (so_luong > 0),
     lieu_luong NVARCHAR(100) NOT NULL,
     FOREIGN KEY (ma_don_thuoc) REFERENCES DONTHUOC(ma_don_thuoc) ON DELETE CASCADE,
     FOREIGN KEY (ma_thuoc) REFERENCES THUOC(ma_thuoc) ON DELETE CASCADE

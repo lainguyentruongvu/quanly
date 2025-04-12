@@ -29,7 +29,7 @@
         <!-- Form Tìm Kiếm Bệnh Án -->
         <form th:action="@{/bacsi/benhan}" method="get" class="mb-3">
             <div class="input-group">
-                <input type="number" class="form-control" name="maBenhNhan" placeholder="Nhập mã bệnh nhân" required>
+                <input type="number" class="form-control" name="maBenhAn" placeholder="Nhập mã bệnh nhân" required>
                 <button type="submit" class="btn btn-primary">Tìm kiếm</button>
             </div>
         </form>
@@ -51,10 +51,11 @@
 
         <!-- Mã Bệnh Nhân -->
         <div class="mb-3">
-            <label for="benhNhan" class="form-label">Mã Bệnh Nhân</label>
-            <select name="benhNhan.maBenhNhan" th:field="*{benhNhan.maBenhNhan}" class="form-control" required >
-                <option value="" disabled selected>Chọn bệnh nhân</option>
-                <option th:each="bn : ${dsBenhNhan}" th:value="${bn.maBenhNhan}" th:text="${bn.maBenhNhan + ' : ' + bn.hoTen}" />
+            <label for="lichKham" class="form-label">Mã Lịch Khám</label>
+            <select name="lichKham.maLichKham" th:field="*{lichKham.maLichKham}" class="form-control" required >
+                <option value="" disabled selected>Chọn lịch khám</option>
+                <option th:each="lk : ${dsLichKham}" th:value="${lk.maLichKham}" 
+                th:text="${lk.maLichKham + ' : ' + (lk.benhNhan != null ? lk.benhNhan.hoTen : 'Không có')}"></option>
             </select>
             <!-- <input type="number" class="form-control" id="benhNhan" name="benhNhan.maBenhNhan" th:value="${benhAn.benhNhan != null ? benhAn.benhNhan.maBenhNhan : ''}" placeholder="Nhập mã bệnh nhân" required> -->
         </div>
@@ -94,6 +95,8 @@
 
         <!-- Nút Lưu -->
         <button type="submit" class="btn btn-primary">Lưu</button>
+        <button  class="btn btn-danger" th:href="@{/bacsi/benhan}">Hủy</button>
+
     </form>
 </div>
         </div>
@@ -104,7 +107,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Tên Bệnh Án</th>
-                    <th>Mã Bệnh Nhân</th>
+                    <th>Mã Lịch Khám</th>
                     <th>Mã Bác Sĩ</th>
                     <th>Ngày Khám</th>
                     <th>Triệu chứng</th>
@@ -117,8 +120,8 @@
                 <tr th:each="benhAn : ${benhAns}">
                     <td th:text="${benhAn.maBenhAn}"></td>
                     <td th:text="${benhAn.tenBenhAn}"></td>
-                    <td th:text="${benhAn.benhNhan.maBenhNhan}"></td>
-                    <td th:text="${benhAn.bacSi.maBacSi}"></td>
+                    <td th:text="${benhAn.lichKham != null ? benhAn.lichKham.maLichKham : 'Không có'}"></td>
+                    <td th:text="${benhAn.bacSi != null ? benhAn.bacSi.maBacSi : 'Không có'}"></td>
                     <td th:text="${benhAn.ngayKham}"></td>
                     <td th:text="${benhAn.trieuChung}"></td>
                     <td th:text="${benhAn.dieuTri}"></td>
