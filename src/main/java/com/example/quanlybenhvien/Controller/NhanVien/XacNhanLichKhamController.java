@@ -27,15 +27,16 @@ public class XacNhanLichKhamController {
             return "redirect:/nhanvien/login";
         }
         model.addAttribute("nhanVien", nhanVienDangNhap);
+        model.addAttribute("activeTab", "cho-xac-nhan");
         model.addAttribute("lichKhams", lichKhamService.getLichKhamChoXacNhan());
         return "nhanvien/lichkham-xacnhan";
     }
 
     @PostMapping("/xac-nhan")
     public String xacNhanLichKham(@RequestParam int maLichKham,
-                                  @RequestParam String trangThai,
-                                  @RequestParam String ghiChu,
-                                  RedirectAttributes redirectAttributes) {
+            @RequestParam String trangThai,
+            @RequestParam String ghiChu,
+            RedirectAttributes redirectAttributes) {
         NhanVien nhanVienDangNhap = nhanVienService.getNhanVienDangNhap();
         if (nhanVienDangNhap == null) {
             redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy thông tin nhân viên đăng nhập!");
@@ -49,5 +50,39 @@ public class XacNhanLichKhamController {
             redirectAttributes.addFlashAttribute("errorMessage", "Lỗi: " + e.getMessage());
         }
         return "redirect:/nhanvien/trangchu/lichkham/cho-xac-nhan";
+    }
+
+    @GetMapping("/da-huy")
+    public String hienThiLichKhamDaHuy(Model model) {
+        NhanVien nhanVienDangNhap = nhanVienService.getNhanVienDangNhap();
+        if (nhanVienDangNhap == null) {
+            return "redirect:/nhanvien/login";
+        }
+         model.addAttribute("nhanVien", nhanVienDangNhap);
+        model.addAttribute("lichKhams", lichKhamService.getLichKhamDaHuy());
+        model.addAttribute("activeTab", "da-huy");
+        return "nhanvien/lichkham-dahuy"; // Trang JSP/HTML bạn sẽ tạo
+    }
+    @GetMapping("/da-hoan-thanh")
+    public String hienThiLichKhamDaHoanThanh(Model model) {
+        NhanVien nhanVienDangNhap = nhanVienService.getNhanVienDangNhap();
+        if (nhanVienDangNhap == null) {
+            return "redirect:/nhanvien/login";
+        }
+         model.addAttribute("nhanVien", nhanVienDangNhap);
+        model.addAttribute("lichKhams", lichKhamService.getLichKhamHoanThanh());
+        model.addAttribute("activeTab", "da-hoan-thanh");
+        return "nhanvien/lich-kham-da-hoan-thanh"; // Trang JSP/HTML bạn sẽ tạo
+    }
+    @GetMapping("/cho-bac-si")
+    public String hienThiLichKhamChoBacSi(Model model) {
+        NhanVien nhanVienDangNhap = nhanVienService.getNhanVienDangNhap();
+        if (nhanVienDangNhap == null) {
+            return "redirect:/nhanvien/login";
+        }
+         model.addAttribute("nhanVien", nhanVienDangNhap);
+        model.addAttribute("activeTab", "cho-bac-si");
+        model.addAttribute("lichKhams", lichKhamService.getChoBacSi());
+        return "nhanvien/lichkham-chobacsi"; // Trang JSP/HTML bạn sẽ tạo
     }
 }

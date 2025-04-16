@@ -90,6 +90,22 @@
                                   th:classappend="${lich.trangThai == 'Đã xác nhận'} ? 'status-confirmed' : 'status-pending'">
                             </span>
                         </p>
+                        <span th:if="${lich.trangThai == 'Chờ xác nhận'}">
+                            <a th:href="@{/nguoidung/lichkham/huylichkham(maLichKham=${lich.maLichKham})}"
+                                onclick="return confirm('Bạn có chắc muốn hủy lịch này không?')"
+                                class="btn btn-danger btn-sm">
+                                <i class="fas fa-times-circle"></i> Hủy lịch
+                            </a>
+                        </span>
+
+                        <!-- Nút Hủy lịch bị khóa (nếu trạng thái không phải "Chờ xác nhận") -->
+                        <span th:if="${lich.trangThai != 'Chờ xác nhận'}">
+                            <a class="btn btn-secondary btn-sm disabled"
+                                style="pointer-events: none; opacity: 0.65; cursor: not-allowed;"
+                                title="Không thể hủy lịch đã xác nhận hoặc đã hủy">
+                                <i class="fas fa-times-circle"></i> Hủy lịch
+                            </a>
+                        </span>
                     </div>
                 </div>
 

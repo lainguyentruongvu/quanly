@@ -16,4 +16,5 @@ public interface LichKhamDao extends JpaRepository<LichKham, Integer> {
     List<LichKham> findByBenhNhan(BenhNhan benhNhan);
 
     List<LichKham> findByBacSiAndTrangThai(BacSi bacSi, String trangThai);
+
 }

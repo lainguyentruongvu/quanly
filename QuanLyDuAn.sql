@@ -127,7 +127,6 @@ CREATE TABLE BENHAN (
     FOREIGN KEY (ma_lich_kham) REFERENCES LICHKHAM(ma_lich_kham),
     FOREIGN KEY (ma_bac_si) REFERENCES BACSI(ma_bac_si)
 );
-SELECT * FROM BENHAN 
 -- Tạo bảng chi tiết dịch vụ
 CREATE TABLE CHITIETDICHVU (
     ma_chi_tiet_dich_vu int identity(1,1) PRIMARY KEY,
