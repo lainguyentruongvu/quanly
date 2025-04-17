@@ -1,23 +1,0 @@
-<div class="col-md-3 sidebar" th:fragment="menu">
-    <h4>Menu</h4>
-    <ul class="nav flex-column">
-        <li class="nav-item">
-            <a class="nav-link" th:href="@{/bacsi/trangchu/lichkham/cho-xac-nhan}">📌 Xác nhận lịch khám</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" th:href="@{/bacsi/trangchu/lichkham/da-xac-nhan}">✅ Lịch khám đã xác nhận</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" th:href="@{/bacsi/benhan}">✅ Thêm bệnh á<nav></nav></a>
-        </li>
-        <li class="nav-item" th:if="${lichKham != null}">
-            <a class="nav-link" th:href="@{'/bacsi/trangchu/dichvu/them?maLichKham=' + ${lichKham.maLichKham}}">➕ Thêm dịch vụ vào lịch khám</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" th:href="@{/bacsi/profile}">👤 Thông tin cá nhân</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-danger fw-bold" th:href="@{/bacsi/logout}">🚪 Đăng xuất</a>
-        </li>
-    </ul>
-</div>
