@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-QuanlybenhvienApplication<QUANLYBENHVIEN>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.example.quanlybenhvien.QuanlybenhvienApplication",
+            "projectName": "QUANLYBENHVIEN",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

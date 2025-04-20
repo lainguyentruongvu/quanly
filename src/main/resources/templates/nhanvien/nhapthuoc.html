@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nhập Thuốc</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+            background: #343a40;
+            padding: 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            color: white;
+        }
+        .sidebar .nav-link {
+            color: white;
+            font-size: 16px;
+            padding: 10px;
+            border-radius: 5px;
+            transition: all 0.3s ease-in-out;
+        }
+        .sidebar .nav-link:hover {
+            background-color: #495057;
+        }
+        .content {
+            margin-left: 270px;
+            padding: 20px;
+        }
+        .hero-section {
+            background: linear-gradient(135deg, #6f42c1, #007bff);
+            color: white;
+            padding: 40px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Sidebar -->
+    <div th:replace="~{nhanvien/menu :: menu}"></div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <div class="hero-section">
+            <h2 class="text-center">👨‍⚕️ Nhân Viên Y Tế - Trách Nhiệm & Sứ Mệnh</h2>
+            <p class="mt-3">
+                Nhân viên y tế đóng vai trò quan trọng trong hệ thống chăm sóc sức khỏe, đặc biệt là việc quản lý thuốc. 
+                Họ không chỉ đảm bảo thuốc được nhập đúng quy trình mà còn theo dõi chất lượng và số lượng thuốc trong kho.
+            </p>
+            <p>
+                🔹 **Quản lý nhập thuốc:** Kiểm tra và ghi nhận số lượng thuốc mới nhập.  
+                🔹 **Theo dõi kho thuốc:** Cập nhật số lượng thuốc còn trong kho theo thời gian thực.  
+                🔹 **Tư vấn & hỗ trợ:** Hỗ trợ bác sĩ và bệnh nhân về việc sử dụng thuốc an toàn.  
+            </p>
+        </div>
+
+        <div class="mt-4">
+           
+            <div class="container mt-4">
+                <h2 class="text-center">Nhập Thuốc</h2>
+        
+                <!-- Form nhập thuốc -->
+                <form th:action="@{/nhanvien/trangchu/nhapthuoc/them}" method="post" th:object="${nhapThuoc}" class="mb-4">
+                    <input type="hidden" th:field="*{nhanVien.maNhanVien}">
+                    <div class="mb-3">
+                        <label class="form-label">Mã Nhân Viên</label>
+                        <input type="text" class="form-control" th:value="${nhanVien != null ? nhanVien.maNhanVien + ' - ' + nhanVien.hoTen : ''}" readonly>
+                    </div>
+        
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label class="form-label">Chọn Mã Thuốc</label>
+                            <select class="form-select" th:field="*{thuoc.maThuoc}" required>
+                                <option value="">-- Chọn thuốc --</option>
+                                <option th:each="thuoc : ${thuocList}" th:value="${thuoc.maThuoc}" th:text="${thuoc.maThuoc + ' - ' + thuoc.tenThuoc}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Số Lượng Nhập</label>
+                            <input type="number" class="form-control" th:field="*{soLuongNhap}" required min="1">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Ngày Nhập</label>
+                            <input type="date" class="form-control" th:field="*{ngayNhap}" required>
+                        </div>
+                    </div>
+        
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <label class="form-label">Nhà Cung Cấp</label>
+                            <input type="text" class="form-control" th:field="*{nhaCungCap}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Ghi Chú</label>
+                            <textarea class="form-control" th:field="*{ghiChu}"></textarea>
+                        </div>
+                    </div>
+        
+                    <button type="submit" class="btn btn-success mt-3">Nhập Thuốc</button>
+        
+                    <div class="mt-3">
+                        <p>Nếu chưa có thuốc bạn cần, <a th:href="@{/nhanvien/trangchu/thuoc}">thêm thuốc mới</a>.</p>
+                    </div>
+                    <div class="mt-3">
+                        <p><a th:href="@{/nhanvien/trangchu/khothuoc/list}" class="btn btn-primary mt-3">Xem Kho Thuốc</a>.</p>
+                    </div>
+        
+                    <!-- Thông báo -->
+                    <div th:if="${successMessage}" class="alert alert-success">
+                        <span th:text="${successMessage}"></span>
+                    </div>
+                    <div th:if="${errorMessage}" class="alert alert-danger">
+                        <span th:text="${errorMessage}"></span>
+                    </div>
+                </form>
+        
+                <!-- Danh sách nhập thuốc -->
+                <h3 class="text-center">Danh Sách Nhập Thuốc</h3>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Mã Nhập</th>
+                            <th>Mã Nhân Viên</th>
+                            <th>Mã Thuốc</th>
+                            <th>Số Lượng Nhập</th>
+                            <th>Ngày Nhập</th>
+                            <th>Nhà Cung Cấp</th>
+                            <th>Ghi Chú</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="nhap : ${nhapThuocList}">
+                            <td th:text="${nhap.maNhapThuoc}"></td>
+                            <td th:text="${nhap.nhanVien != null ? nhap.nhanVien.maNhanVien : 'N/A'}"></td>
+                            <td th:text="${nhap.thuoc != null ? nhap.thuoc.maThuoc : 'N/A'}"></td>
+                            <td th:text="${nhap.soLuongNhap}"></td>
+                            <td th:text="${#temporals.format(nhap.ngayNhap, 'dd/MM/yyyy')}"></td>
+                            <td th:text="${nhap.nhaCungCap}"></td>
+                            <td th:text="${nhap.ghiChu}"></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(nhapThuocList)}">
+                            <td colspan="7" class="text-center text-danger">Chưa có dữ liệu nhập thuốc!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    
+</body>
+</html>
