@@ -1,6 +1,7 @@
 package com.example.quanlybenhvien.Entity;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,7 +38,7 @@ public class BenhAn {
     private BacSi bacSi;
 
     @Column(name = "ngay_kham")
-    private Date ngayKham;
+    private LocalDateTime ngayKham;
 
     @Column(name = "trieu_chung")
     private String trieuChung;
@@ -47,4 +48,5 @@ public class BenhAn {
 
     @Column(name = "ghi_chu")
     private String ghiChu;
+
 }
