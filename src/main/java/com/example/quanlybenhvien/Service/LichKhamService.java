@@ -1,5 +1,6 @@
 package com.example.quanlybenhvien.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +32,8 @@ public class LichKhamService {
         lichKhamDao.save(lichKham);
     }
 
-    // Lấy danh sách lịch khám theo trạng thái (ví dụ: "Chờ xác nhận", "Đã xác nhận bởi bác sĩ", v.v.)
+    // Lấy danh sách lịch khám theo trạng thái (ví dụ: "Chờ xác nhận", "Đã xác nhận
+    // bởi bác sĩ", v.v.)
     public List<LichKham> layLichKhamTheoTrangThai(String trangThai) {
         return lichKhamDao.findByTrangThai(trangThai);
     }
@@ -40,7 +42,7 @@ public class LichKhamService {
     public List<LichKham> findByBenhNhan(BenhNhan benhNhan) {
         return lichKhamDao.findByBenhNhan(benhNhan);
     }
-    
+
     // Lấy danh sách lịch khám chờ xác nhận (ví dụ trạng thái "Chờ xác nhận")
     public List<LichKham> getLichKhamChoXacNhan() {
         return lichKhamDao.findByTrangThai("Chờ xác nhận");
@@ -63,22 +65,20 @@ public class LichKhamService {
 
     // Lấy danh sách lịch khám chờ bác sĩ xác nhận theo bác sĩ đăng nhập
     public List<LichKham> getLichKhamChoXacNhanTheoBacSi(BacSi bacSi) {
-        // Đảm bảo trong LichKhamDao có phương thức: findByBacSiAndTrangThai(BacSi bacSi, String trangThai)
+        // Đảm bảo trong LichKhamDao có phương thức: findByBacSiAndTrangThai(BacSi
+        // bacSi, String trangThai)
         return lichKhamDao.findByBacSiAndTrangThai(bacSi, "Chờ bác sĩ xác nhận");
     }
 
     // Cập nhật lịch khám khi bác sĩ xác nhận hoặc hủy
-    public void xacNhanLichKhamTheoBacSi(int maLichKham, String trangThai, String ghiChu, BacSi bacSi) {
-        Optional<LichKham> optional = lichKhamDao.findById(maLichKham);
-        if (optional.isPresent()) {
-            LichKham lichKham = optional.get();
-            lichKham.setTrangThai(trangThai);
-            lichKham.setGhiChu(ghiChu);
-            lichKham.setBacSi(bacSi);
-            lichKhamDao.save(lichKham);
-        } else {
-            throw new RuntimeException("Không tìm thấy lịch khám với mã: " + maLichKham);
-        }
+    public LichKham xacNhanLichKhamTheoBacSi(int maLichKham, String trangThai, String ghiChu, BacSi bacSi) {
+        LichKham lichKham = lichKhamDao.findById(maLichKham)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy lịch khám với mã: " + maLichKham));
+
+        lichKham.setTrangThai(trangThai);
+        lichKham.setGhiChu(ghiChu);
+        lichKham.setBacSi(bacSi);
+        return lichKhamDao.save(lichKham);
     }
 
     // Lấy danh sách lịch khám đã xác nhận bởi bác sĩ (chưa có cập nhật khác)
@@ -94,7 +94,7 @@ public class LichKhamService {
     public LichKham getLichKhamById(int maLichKham) {
         return lichKhamDao.findById(maLichKham).orElse(null);
     }
-    
+
     // Đánh dấu lịch khám khi bệnh nhân đã đến
     public boolean danhDauBenhNhanDaDen(Integer maLichKham) {
         Optional<LichKham> optional = lichKhamDao.findById(maLichKham);
@@ -150,7 +150,7 @@ public class LichKhamService {
         System.out.println("❌ Không tìm thấy lịch khám với mã: " + maLichKham);
         return false;
     }
-    
+
     // Thêm dịch vụ vào lịch khám (kết hợp ChiTietDichVu)
     public LichKham addLichKhamWithDichVu(LichKham lichKham, List<ChiTietDichVu> chiTietDichVus) {
         // Bước 1: Lưu lịch khám
@@ -164,23 +164,28 @@ public class LichKhamService {
         savedLichKham.getChiTietDichVus().addAll(chiTietDichVus);
         return lichKhamDao.save(savedLichKham);
     }
+
     public List<LichKham> getLichKhamBenhNhanDaDenTheoBacSi(BacSi bacSi) {
         return lichKhamDao.findByBacSiAndTrangThai(bacSi, "Bệnh nhân đã đến");
     }
-    
+
     public Optional<LichKham> findById(int maLichKham) {
         return lichKhamDao.findById(maLichKham);
     }
-    public List<LichKham> getLichKhamDaHuy()
-    {
+
+    public List<LichKham> getLichKhamDaHuy() {
         return lichKhamDao.findByTrangThai("Đã hủy");
     }
-    public List<LichKham> getChoBacSi()
-    {
+
+    public List<LichKham> getChoBacSi() {
         return lichKhamDao.findByTrangThai("Chờ bác sĩ xác nhận");
     }
-    public List<LichKham> getLichKhamHoanThanh()
-    {
+
+    public List<LichKham> getLichKhamHoanThanh() {
         return lichKhamDao.findByTrangThai("Đã hoàn thành");
+    }
+
+    public List<LichKham> getAllLichKhams() {
+        return lichKhamDao.findAll();
     }
 }

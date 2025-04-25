@@ -1,103 +1,152 @@
 package com.example.quanlybenhvien.Controller.BacSi;
 
-import com.example.quanlybenhvien.Dao.BenhAnDao;
-import com.example.quanlybenhvien.Dao.LichKhamDao;
-import com.example.quanlybenhvien.Entity.BenhAn;
-import com.example.quanlybenhvien.Service.BacSiService;
-import com.example.quanlybenhvien.Service.BenhAnService;
-
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
-import java.util.Optional;
-
+import com.example.quanlybenhvien.Entity.BenhAn;
+import com.example.quanlybenhvien.Entity.LichKham;
+import com.example.quanlybenhvien.Service.BenhAnService;
+import com.example.quanlybenhvien.Service.LichKhamService;
 
 @Controller
-@RequestMapping("/bacsi/benhan")
+@RequestMapping("/bacsi/trangchu/benhan")
 public class BenhAnController {
-    @Autowired
-    private  BenhAnDao benhAnDao;
 
     @Autowired
     private BenhAnService benhAnService;
 
     @Autowired
-    private BacSiService bacSiService;
+    private LichKhamService lichKhamService;
 
-    @Autowired
-    private LichKhamDao lichKhamDao;
-
-  
-
-    // Hiển thị danh sách bệnh án và form thêm/sửa
-    @GetMapping("")
-    public String listBenhAnByMaBenhAn(@RequestParam(value = "maBenhAn", required = false) Integer maBenhAn, Model model) {
-        List<BenhAn> benhAns = (maBenhAn != null) ? benhAnService.getBenhAnByMaBenhAn(maBenhAn) : benhAnService.getAllBenhAn();
-        model.addAttribute("benhAns", benhAns);
-        model.addAttribute("benhAn", new BenhAn());
-        model.addAttribute("dsLichKham", lichKhamDao.findAll());
-        model.addAttribute("dsBacSi", bacSiService.getAllBacSi());
+    @GetMapping()
+    public String hienThilichKham(Model model) {
+        List<LichKham> dslichKham = lichKhamService.getAllLichKhams();
+        model.addAttribute("dslichKham", dslichKham);
+        model.addAttribute("activeTab", "lich-kham");
         return "bacsi/benhan";
     }
 
-    // findById
-    @GetMapping("/edit/{id}")
-    public String getBenhAnById(@PathVariable("id") Integer id, Model model) {
-        // Lấy bệnh án theo ID
-        Optional<BenhAn> benhAnOptional = benhAnService.getBenhAnById(id);
-        if (benhAnOptional.isPresent()) {
-            model.addAttribute("benhAn", benhAnOptional.get());
-        } else {
-            model.addAttribute("error", "Không tìm thấy bệnh án với ID: " + id);
-            // Truyền danh sách bác sĩ và bệnh nhân để hiển thị dropdown
-            model.addAttribute("dsLichKham", lichKhamDao.findAll());
-            model.addAttribute("dsBacSi", bacSiService.getAllBacSi());
-            return "bacsi/benhan"; // Trả về trang danh sách bệnh án
+    @GetMapping("/danh-sach-benh-an")
+    public String hienThiDanhSachBenhAn(Model model) {
+        List<BenhAn> danhSachBenhAn = benhAnService.getAllBenhAn();
+        model.addAttribute("danhSachBenhAn", danhSachBenhAn);
+        model.addAttribute("activeTab", "danh-sach-benh-an");
+        return "bacsi/hienthibenhan";
+    }
+
+    // Trang thêm mới bệnh án
+    @GetMapping("/add/{maLichKham}")
+    public String themBenhAnForm(@PathVariable("maLichKham") Integer maLichKham, Model model) {
+        Optional<LichKham> lichKhamOpt = lichKhamService.findById(maLichKham);
+
+        if (lichKhamOpt.isPresent()) {
+            LichKham lichKham = lichKhamOpt.get();
+            model.addAttribute("lichKham", lichKham);
         }
 
-        // Truyền danh sách bác sĩ và bệnh nhân để hiển thị dropdown
-        model.addAttribute("dsLichKham", lichKhamDao.findAll());
-        model.addAttribute("dsBacSi", bacSiService.getAllBacSi());
-    return "bacsi/benhan"; // Trả về trang sửa bệnh án
-}
-    
+        model.addAttribute("benhAn", new BenhAn());
+        model.addAttribute("isEdit", false);
+        return "bacsi/thembenhan";
+    }
 
-
-    // Xử lý thêm hoặc cập nhật bệnh án
+    // Lưu bệnh án mới
     @PostMapping("/save")
-    public String saveBenhAn(@ModelAttribute BenhAn benhAn) {
-        if (benhAn.getMaBenhAn() != null && benhAnDao.existsById(benhAn.getMaBenhAn())) {
-            // Cập nhật bệnh án
-            BenhAn existingBenhAn = benhAnDao.findById(benhAn.getMaBenhAn()).orElseThrow(() -> new RuntimeException("Không tìm thấy bệnh án."));
-            existingBenhAn.setTenBenhAn(benhAn.getTenBenhAn());
-            existingBenhAn.setNgayKham(benhAn.getNgayKham());
-            existingBenhAn.setTrieuChung(benhAn.getTrieuChung());
-            existingBenhAn.setDieuTri(benhAn.getDieuTri());
-            existingBenhAn.setGhiChu(benhAn.getGhiChu());
-            benhAnDao.save(existingBenhAn);
-        } else {
-            // Thêm mới bệnh án
-            benhAnDao.save(benhAn);
-        }
-      
-    return "redirect:/bacsi/benhan";
-}
-    
+    public String saveBenhAn(@RequestParam("lichKhamId") Integer lichKhamId,
+                             @RequestParam("trieuChung") String trieuChung,
+                             @RequestParam("dieuTri") String dieuTri,
+                             @RequestParam("ghiChu") String ghiChu,
+                             @RequestParam("tenBenhAn") String tenBenhAn,
+                             Model model) {
 
-    // Xóa bệnh án
-   @GetMapping("/delete/{id}")
-    public String deleteBenhAn(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
-        if (id == null || !benhAnService.existsById(id)) {
-            redirectAttributes.addFlashAttribute("error", "Không tìm thấy bệnh án với ID: " + id);
-            return "redirect:/bacsi/benhan";
+        Optional<LichKham> lichKhamOpt = lichKhamService.findById(lichKhamId);
+
+        if (lichKhamOpt.isPresent()) {
+            LichKham lichKham = lichKhamOpt.get();
+
+            if (lichKham.getBacSi() != null) {
+                BenhAn benhAn = new BenhAn();
+                benhAn.setLichKham(lichKham);
+                benhAn.setTrieuChung(trieuChung);
+                benhAn.setDieuTri(dieuTri);
+                benhAn.setGhiChu(ghiChu);
+                benhAn.setTenBenhAn(tenBenhAn);
+                benhAn.setBacSi(lichKham.getBacSi());
+               benhAn.setNgayKham(LocalDateTime.now());
+
+
+                benhAnService.saveBenhAn(benhAn);
+            } else {
+                model.addAttribute("error", "Bác sĩ không hợp lệ.");
+                return "bacsi/thembenhan";
+            }
+        } else {
+            model.addAttribute("error", "Không tìm thấy thông tin lịch khám.");
+            return "bacsi/thembenhan";
         }
-        benhAnService.deleteBenhAn(id);
-        redirectAttributes.addFlashAttribute("success", "Xóa bệnh án thành công!");
-        return "redirect:/bacsi/benhan";
+
+        return "redirect:/bacsi/trangchu/benhan/danh-sach-benh-an";
+    }
+
+    // Cập nhật bệnh án
+    @PostMapping("/update/{benhAnId}")
+public String updateBenhAn(@PathVariable("benhAnId") Integer benhAnId,
+                           @ModelAttribute("benhAn") BenhAn benhAn, Model model) {
+
+    Optional<BenhAn> benhAnOpt = benhAnService.getBenhAnById(benhAnId);
+
+    if (benhAnOpt.isPresent()) {
+        BenhAn existingBenhAn = benhAnOpt.get();
+
+        // Kiểm tra thời gian chỉnh sửa (15 phút)
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime thoiGianTao = existingBenhAn.getNgayKham();
+        Duration duration = Duration.between(thoiGianTao, now);
+
+        if (duration.toMinutes() > 15) {
+            model.addAttribute("error", "Chỉ được chỉnh sửa bệnh án trong vòng 15 phút sau khi tạo.");
+            model.addAttribute("benhAn", existingBenhAn);
+            model.addAttribute("lichKham", existingBenhAn.getLichKham());
+            model.addAttribute("isEdit", true);
+            return "bacsi/thembenhan";
+        }
+
+        existingBenhAn.setTenBenhAn(benhAn.getTenBenhAn());
+        existingBenhAn.setTrieuChung(benhAn.getTrieuChung());
+        existingBenhAn.setDieuTri(benhAn.getDieuTri());
+        existingBenhAn.setGhiChu(benhAn.getGhiChu());
+
+        benhAnService.saveBenhAn(existingBenhAn);
+
+        return "redirect:/bacsi/trangchu/benhan/danh-sach-benh-an";
+    } else {
+        model.addAttribute("error", "Không tìm thấy bệnh án.");
+        return "bacsi/thembenhan";
     }
 }
+
+
+    // Sửa bệnh án
+    @GetMapping("/edit/{id}")
+    public String editBenhAnForm(@PathVariable("id") Integer id, Model model) {
+        Optional<BenhAn> benhAnOpt = benhAnService.getBenhAnById(id);
+
+        if (benhAnOpt.isPresent()) {
+            BenhAn benhAn = benhAnOpt.get();
+            model.addAttribute("benhAn", benhAn);
+            model.addAttribute("lichKham", benhAn.getLichKham());
+            model.addAttribute("isEdit", true);
+            return "bacsi/thembenhan";
+        } else {
+            model.addAttribute("error", "Không tìm thấy bệnh án.");
+            return "bacsi/benhan";
+        }
+    }
+} 

@@ -15,9 +15,7 @@ public class DichVuService {
         this.dichVuRepository = dichVuRepository;
     }
 
-    public List<DichVu> layTatCa() {
-        return dichVuRepository.findAll();
-    }
+
 
     public DichVu timTheoId(String id) {
         return dichVuRepository.findById(id).orElse(null);

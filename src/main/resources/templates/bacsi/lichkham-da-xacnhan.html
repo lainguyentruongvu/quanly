@@ -201,6 +201,7 @@
             <th>Giờ khám</th>
             <th>Trạng thái</th>
             <th>Ghi chú</th>
+            <th>Hành động</th>
           </tr>
         </thead>
         <tbody>
@@ -212,6 +213,13 @@
             <td th:text="${lich.gioKham}"></td>
             <td><span class="badge bg-success">Lịch Khám đã hoàn thành</span></td>
             <td th:text="${lich.ghiChu}"></td>
+            <td>
+              <a class="btn btn-secondary btn-sm mb-1"
+                  th:href="@{'/bacsi/trangchu/dichvu/danh-sach?maLichKham=' + ${lich.maLichKham}}"
+                  onclick="return confirm('Đến trang chi tiết dịch vụ?');">
+                  ✅ Xem chi tiết DV
+                </a>
+            </td>
           </tr>
         </tbody>
       </table>

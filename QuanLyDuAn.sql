@@ -1,4 +1,4 @@
-﻿	-- Tạo database
+﻿-- Tạo database
 CREATE DATABASE QuanLyDuAn;
 USE QuanLyDuAn;
 go
@@ -49,9 +49,9 @@ CREATE TABLE BACSI (
 	mat_khau varchar(255) NOT NULL,
     gioi_tinh VARCHAR(10) NOT NULL,
     dia_chi NVARCHAR(255) NOT NULL,
-    SDT VARCHAR(15) NOT NULL UNIQUE,
-    cccd VARCHAR(20) NOT NULL UNIQUE,
-    email VARCHAR(255) NOT NULL UNIQUE,
+    SDT VARCHAR(15) NOT NULL ,
+    cccd VARCHAR(20) NOT NULL ,
+    email VARCHAR(255) NOT NULL ,
     hinh NVARCHAR(255) NOT NULL,
     vai_tro VARCHAR(20) NOT NULL,
 	chuyen_khoa varchar(20) null,
@@ -65,9 +65,9 @@ CREATE TABLE NHANVIEN (
 	mat_khau varchar(255) NOT NULL,
     gioi_tinh VARCHAR(10) NOT NULL,
     dia_chi NVARCHAR(255) NOT NULL,
-    SDT VARCHAR(15) NOT NULL UNIQUE,
-    cccd VARCHAR(20) NOT NULL UNIQUE,
-    email VARCHAR(255) NOT NULL UNIQUE,
+    SDT VARCHAR(15) NOT NULL ,
+    cccd VARCHAR(20) NOT NULL ,
+    email VARCHAR(255) NOT NULL ,
     hinh NVARCHAR(255) NOT NULL,
     vai_tro VARCHAR(20) NOT NULL,
 	ghi_chu nvarchar(250) not null,
@@ -79,7 +79,7 @@ CREATE TABLE BENHNHAN (
     ho_ten NVARCHAR(255) NOT NULL,
     nam_sinh DATE ,
     gioi_tinh VARCHAR(10) ,
-    sdt VARCHAR(15) UNIQUE,
+    sdt VARCHAR(15) ,
     email VARCHAR(255) NOT NULL ,
     mat_khau NVARCHAR(255) ,
     hinh NVARCHAR(255) ,
@@ -96,6 +96,7 @@ CREATE TABLE DICHVU (
     gia DECIMAL(10,2) NOT NULL
 );
 
+select * from LICHKHAM
 -- Tạo bảng lịch khám
 CREATE TABLE LICHKHAM (
     ma_lich_kham int identity(1,1) PRIMARY KEY,
@@ -114,6 +115,22 @@ CREATE TABLE LICHKHAM (
 );
 
 select * from LICHKHAM
+
+SELECT COLUMN_NAME 
+FROM INFORMATION_SCHEMA.COLUMNS 
+WHERE TABLE_NAME = 'BENHAN';
+
+
+ALTER TABLE BENHAN
+ADD ma_lich_kham INT NOT NULL;
+
+-- Sau đó thêm ràng buộc khóa ngoại:
+ALTER TABLE BENHAN
+ADD CONSTRAINT FK_BENHAN_LICHKHAM
+FOREIGN KEY (ma_lich_kham) REFERENCES LICHKHAM(ma_lich_kham);
+
+select * from BENHAN
+delete from BENHAN
 -- Tạo bảng bệnh án
 CREATE TABLE BENHAN (
     ma_benh_an int identity(1,1) PRIMARY KEY,
@@ -140,8 +157,8 @@ CREATE TABLE CHITIETDICHVU (
 -- Tạo bảng hóa đơn 
 CREATE TABLE HOADON (
     ma_hoa_don INT IDENTITY(1,1) PRIMARY KEY,
-    ma_lich_kham INT NOT NULL UNIQUE,
-    ngay_thanh_toan DATE NOT NULL,
+    ma_lich_kham INT NOT NULL ,
+    ngay_thanh_toan DATE NOT NULL check (ngay_thanh_toan >= CAST(GETDATE() AS DATE)),
     tong_tien DECIMAL(10,2) NOT NULL,
     hinh_thuc NVARCHAR(100) NOT NULL,
     trang_thai NVARCHAR(50) NOT NULL DEFAULT 'Chưa thanh toán',

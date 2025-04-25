@@ -1,137 +1,151 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý Bệnh Án</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: Arial, sans-serif;
-        }
-        .content {
-            margin: 20px;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        .table-hover tbody tr:hover {
-            background-color: #f1f3f5 !important;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Quản lý bệnh án</title>
+  <!-- Sử dụng Bootstrap CSS từ CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css">
 </head>
+<style>
+  body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f8f9fa;
+  }
+  .sidebar {
+      width: 250px;
+      min-height: 100vh;
+      background: #343a40;
+      padding: 20px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      color: white;
+  }
+  .sidebar .nav-link {
+      color: white;
+      font-size: 16px;
+      padding: 10px;
+      border-radius: 5px;
+      transition: all 0.3s ease-in-out;
+  }
+  .sidebar .nav-link:hover {
+      background-color: #495057;
+  }
+  .content {
+      margin-left: 270px;
+      padding: 20px;
+  }
+  .hero-section {
+      background: linear-gradient(135deg, #6f42c1, #007bff);
+      color: white;
+      padding: 40px;
+      border-radius: 10px;
+  }
+</style>
 <body>
-    <div class="container mt-4">
-        <h1 class="text-center mb-4">Quản lý Bệnh Án</h1>
+   <!-- Sidebar -->
+   <div th:replace="~{bacsi/menu :: menu}"></div>
 
-        <!-- Form Tìm Kiếm Bệnh Án -->
-        <form th:action="@{/bacsi/benhan}" method="get" class="mb-3">
-            <div class="input-group">
-                <input type="number" class="form-control" name="maBenhAn" placeholder="Nhập mã bệnh nhân" required>
-                <button type="submit" class="btn btn-primary">Tìm kiếm</button>
-            </div>
-        </form>
+   <!-- Main Content -->
+   <div class="content">
+       <div class="hero-section">
+           <h2 class="text-center">👨‍⚕️ Nhân Viên Y Tế - Trách Nhiệm & Sứ Mệnh</h2>
+           <p class="mt-3">
+               Nhân viên y tế đóng vai trò quan trọng trong hệ thống chăm sóc sức khỏe, đặc biệt là việc quản lý thuốc. 
+               Họ không chỉ đảm bảo thuốc được nhập đúng quy trình mà còn theo dõi chất lượng và số lượng thuốc trong kho.
+           </p>
+           <p>
+               🔹 **Quản lý nhập thuốc:** Kiểm tra và ghi nhận số lượng thuốc mới nhập.  
+               🔹 **Theo dõi kho thuốc:** Cập nhật số lượng thuốc còn trong kho theo thời gian thực.  
+               🔹 **Tư vấn & hỗ trợ:** Hỗ trợ bác sĩ và bệnh nhân về việc sử dụng thuốc an toàn.  
+           </p>
+       </div>
 
-        <!-- Form Thêm/Sửa Bệnh Án -->
-        <!-- Form Thêm/Sửa Bệnh Án -->
-<div class="content mb-4">
-    <h2 th:if="${benhAn.maBenhAn != null}" class="mb-3">Sửa Bệnh Án</h2>
-    <h2 th:unless="${benhAn.maBenhAn != null}" class="mb-3">Thêm Bệnh Án</h2>
-    <form th:action="@{/bacsi/benhan/save}" th:object="${benhAn}" method="post">
-        <!-- Mã Bệnh Án (ẩn) -->
-        <input type="hidden" name="maBenhAn" th:value="${benhAn.maBenhAn}">
+       <div class="mt-4">
+           <h4>📋 Các Chức Năng Chính</h4>
+           <div class="container my-4">
+            <div th:include="~{bacsi/tab :: tab}"></div>
 
-        <!-- Tên Bệnh Án -->
-        <div class="mb-3">
-            <label for="tenBenhAn" class="form-label">Tên Bệnh Án</label>
-            <input type="text" class="form-control" name="tenBenhAn" id="tenBenhAn" th:value="${benhAn.tenBenhAn}" placeholder="Nhập tên bệnh án" required>
-        </div>
-
-        <!-- Mã Bệnh Nhân -->
-        <div class="mb-3">
-            <label for="lichKham" class="form-label">Mã Lịch Khám</label>
-            <select name="lichKham.maLichKham" th:field="*{lichKham.maLichKham}" class="form-control" required >
-                <option value="" disabled selected>Chọn lịch khám</option>
-                <option th:each="lk : ${dsLichKham}" th:value="${lk.maLichKham}" 
-                th:text="${lk.maLichKham + ' : ' + (lk.benhNhan != null ? lk.benhNhan.hoTen : 'Không có')}"></option>
-            </select>
-            <!-- <input type="number" class="form-control" id="benhNhan" name="benhNhan.maBenhNhan" th:value="${benhAn.benhNhan != null ? benhAn.benhNhan.maBenhNhan : ''}" placeholder="Nhập mã bệnh nhân" required> -->
-        </div>
-
-        <!-- Mã Bác Sĩ -->
-        <div class="mb-3">
-            <label for="benhNhan" class="form-label">Mã Bác Sĩ</label>
-            <select name="bacSi.maBacSi" th:field="*{bacSi.maBacSi}" class="form-control" required >
-                <option value="" disabled selected>Chọn bác sĩ</option>
-                <option th:each="bs : ${dsBacSi}" th:value="${bs.maBacSi}" th:text="${bs.maBacSi + ' : ' + bs.hoTen}" />
-            </select>
-            <!-- <input type="text" class="form-control" id="bacSi" name="bacSi.maBacSi"  th:value="${benhAn.bacSi != null ? benhAn.bacSi.maBacSi : ''}" placeholder="Nhập mã bác sĩ" required> -->
-        </div>
-        <!-- Ngày Khám -->
-        <div class="mb-3">
-            <label for="ngayKham" class="form-label">Ngày Khám</label>
-            <input type="date" class="form-control" id="ngayKham" name="ngayKham" th:value="${benhAn.ngayKham}" required>
-        </div>
-
-        <!-- Triệu Chứng -->
-        <div class="mb-3">
-            <label for="trieuChung" class="form-label">Triệu Chứng</label>
-            <input class="form-control" id="trieuChung" name="trieuChung" th:value="${benhAn.trieuChung}" placeholder="Nhập triệu chứng" required></input>
-        </div>
-
-        <!-- Điều Trị -->
-        <div class="mb-3">
-            <label for="dieuTri" class="form-label">Điều Trị</label>
-            <input class="form-control" id="dieuTri" name="dieuTri" th:value="${benhAn.dieuTri}" placeholder="Nhập phương pháp điều trị" required></input>
-        </div>
-
-        <!-- Ghi Chú -->
-        <div class="mb-3">
-            <label for="ghiChu" class="form-label">Ghi Chú</label>
-            <input class="form-control" id="ghiChu" name="ghiChu" th:value="${benhAn.ghiChu}" placeholder="Nhập ghi chú"></input>
-        </div>
-
-        <!-- Nút Lưu -->
-        <button type="submit" class="btn btn-primary">Lưu</button>
-        <button  class="btn btn-danger" th:href="@{/bacsi/benhan}">Hủy</button>
-    </form>
-</div>
-        </div>
-
-        <!-- Danh sách Bệnh Án -->
-        <table class="table table-bordered table-hover">
-            <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Tên Bệnh Án</th>
-                    <th>Mã Lịch Khám</th>
-                    <th>Mã Bác Sĩ</th>
-                    <th>Ngày Khám</th>
-                    <th>Triệu chứng</th>
-                    <th>Điều trị</th>
+            <h2 class="text-center mb-4">Danh sách lịch khám chưa thêm có bệnh án</h2>
+            
+            <!-- Hiển thị thông báo nếu có -->
+            <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+            <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+            
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover align-middle">
+                <thead class="table-light">
+                  <tr class="text-center">
+                    <th>Mã lịch khám</th>
+                    <th>Mã bệnh nhân</th>
+                    <th>Mã bác sĩ</th>
+                    <th>Ngày khám</th>
+                    <th>Trạng thái</th>
                     <th>Ghi chú</th>
                     <th>Hành động</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="benhAn : ${benhAns}">
-                    <td th:text="${benhAn.maBenhAn}"></td>
-                    <td th:text="${benhAn.tenBenhAn}"></td>
-                    <td th:text="${benhAn.lichKham != null ? benhAn.lichKham.maLichKham : 'Không có'}"></td>
-                    <td th:text="${benhAn.bacSi != null ? benhAn.bacSi.maBacSi : 'Không có'}"></td>
-                    <td th:text="${benhAn.ngayKham}"></td>
-                    <td th:text="${benhAn.trieuChung}"></td>
-                    <td th:text="${benhAn.dieuTri}"></td>
-                    <td th:text="${benhAn.ghiChu}"></td>
-                    <td>
-                        <a th:href="@{/bacsi/benhan/edit/{id}(id=${benhAn.maBenhAn})}" class="btn btn-warning btn-sm">Sửa</a>
-                        <a th:href="@{/bacsi/benhan/delete/{id}(id=${benhAn.maBenhAn})}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</a>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="lich : ${dslichKham}">
+                    <td class="text-center" th:text="${lich.maLichKham}">1</td>
+                    <td th:text="${lich.benhNhan.maBenhNhan}">B001</td>
+                    <td th:text="${lich.bacSi.maBacSi}">BS001</td>
+                    <td class="text-center" th:text="${#temporals.format(lich.ngayKham, 'dd/MM/yyyy')}">01/01/2025</td>
+                    <td class="text-center" th:text="${lich.trangThai}">Chờ xác nhận</td>
+                    <td th:text="${lich.ghiChu}">–</td>
+                    <!-- Gộp timer + link vào 1 ô -->
+                    <td class="text-center">
+                      <div class="input-group input-group-sm w-auto d-inline-flex align-items-center">
+                        <span class="input-group-text py-1 px-2">⏳ <span id="timer">15:00</span></span>
+                        <a th:href="@{/bacsi/trangchu/benhan/add/{maLichKham}(maLichKham=${lich.maLichKham})}"
+                           class="btn btn-sm btn-primary ms-1 add-btn">Thêm bệnh án</a>
+                      </div>
                     </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+                  </tr>
+                </tbody>
+                
+              </table>
+            </div>
+
+
+
+          </div>
+       </div>
+   </div>
+<!-- Đồng hồ đếm ngược -->
+<!-- <div class="d-flex justify-content-end mb-2">
+  <div class="input-group input-group-sm w-auto align-items-center">
+    <span class="input-group-text py-1 px-2">⏳ <span id="timer">15:00</span></span>
+    <button id="updateButton" class="btn btn-sm btn-danger py-1 px-2">Cập nhật</button>
+  </div>
+</div> -->
+
+
+
+
+  <!-- Bootstrap JS Bundle (với Popper) -->
+  <script>
+    let duration = 15 * 60;
+    const timerDisplay = document.getElementById("timer");
+    const addBtns = document.querySelectorAll(".add-btn");
+  
+    const countdown = setInterval(() => {
+      let m = String(Math.floor(duration/60)).padStart(2,'0'),
+          s = String(duration%60).padStart(2,'0');
+      timerDisplay.textContent = `${m}:${s}`;
+      duration--;
+      if (duration < 0) {
+        clearInterval(countdown);
+        timerDisplay.textContent = "00:00";
+        addBtns.forEach(btn => {
+          btn.classList.add("disabled");
+          btn.removeAttribute("href");
+          btn.textContent = "⛔ Hết thời gian";
+        });
+      }
+    }, 1000);
+  </script>
+  
+  
 </body>
 </html>

@@ -100,15 +100,19 @@
                 </div>
     
                 <!-- Nút quay lại -->
-                <div class="text-center mt-4">
-                    <a href="/bacsi/trangchu/lichkham/da-xac-nhan" class="btn btn-secondary">
+                <div class="d-flex justify-content-center gap-3 mt-4 flex-wrap">
+                    <a href="/bacsi/trangchu/lichkham/da-xac-nhan" class="btn btn-outline-secondary px-4">
                         <i class="bi bi-arrow-left"></i> Quay Lại
                     </a>
-                    <a th:href="@{'/bacsi/trangchu/lichkham/hoanthanh'(maLichKham=${lichKham.maLichKham})}" class="btn btn-success">
-                        ✅ Hoàn thành
+                    <a th:href="@{'/bacsi/trangchu/lichkham/hoanthanh'(maLichKham=${lichKham.maLichKham})}" class="btn btn-success px-4">
+                        <i class="bi bi-check-circle"></i> Hoàn thành
                     </a>
-                    
+                    <a th:href="@{'/bacsi/trangchu/dichvu/them?maLichKham=' + ${lichKham.maLichKham}}" class="btn btn-primary px-4">
+                        <i class="bi bi-plus-circle"></i> Thêm dịch vụ
+                    </a>
                 </div>
+                
+                
             </div>
         </div>
      </div>
